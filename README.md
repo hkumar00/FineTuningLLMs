@@ -34,7 +34,7 @@ Our approach allows **modular plug-and-play fine-tuning** across different model
 pip install -r requirements.txt
 
 
-Your fine-tuning script should follow this general flow:
+## Your fine-tuning script should follow this general flow:
 - Load model + tokenizer
 - Configure LoRA using LoraConfig
 - Format your dataset (instruction, input, output)
