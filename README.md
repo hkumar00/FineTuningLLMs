@@ -50,8 +50,8 @@ pip install -r requirements.txt
       Fine-tune using SFTTrainer
       Pass in your model, dataset, tokenizer (optional), and training arguments.
 
-Save checkpoints or merge LoRA adapter
-Save fine-tuned weights and optionally merge LoRA into the base model for standalone inference.
+      Save checkpoints or merge LoRA adapter
+      Save fine-tuned weights and optionally merge LoRA into the base model for standalone inference.
 
 
 
