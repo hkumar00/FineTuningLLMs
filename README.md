@@ -32,7 +32,7 @@ Our approach allows **modular plug-and-play fine-tuning** across different model
 
 ```bash
 pip install -r requirements.txt
-
+```
 ---
 
 🧩 Fine-Tuning Workflow Summary
