@@ -34,51 +34,44 @@ Our approach allows **modular plug-and-play fine-tuning** across different model
 pip install -r requirements.txt
 ```
 ---
-🔄 Fine-Tuning Workflow Summary
-This section outlines the standard pattern followed in all training scripts within this repo.
+## 🔄 Fine-Tuning Workflow Summary
 
-🔧 Step-by-step Flow:
-Load the base model and tokenizer
-Use AutoModelForCausalLM and AutoTokenizer from Hugging Face with appropriate memory/dtype settings for your device.
+This section outlines the standard pattern followed in all training scripts within this repo. It ensures modularity, clarity, and compatibility with consumer-grade hardware setups.
 
-Configure LoRA with LoraConfig
-Use PEFT to define parameters like:
+### 🔧 Step-by-step Flow:
 
-r (rank)
+1. **Load the base model and tokenizer**  
+   Use `AutoModelForCausalLM` and `AutoTokenizer` from Hugging Face.  
+   Set `torch_dtype=torch.float32` and `low_cpu_mem_usage=True` to reduce memory usage.
 
-alpha (scaling factor)
+2. **Configure LoRA with `LoraConfig`**  
+   Leverage `peft` to define low-rank adaptation:
+   - `r=8` (rank)
+   - `lora_alpha=16` (scaling factor)
+   - `lora_dropout=0.1`
+   - `bias="none"`
+   - `task_type=TaskType.CAUSAL_LM`
 
-dropout
+3. **Format your dataset**  
+   Each record must have:
+   - `instruction` (what the model should do)
+   - `input` (optional context)
+   - `output` (the expected response)
 
-task_type=TaskType.CAUSAL_LM
+   Format the prompt in Alpaca style:
+     Instruction: {instruction} Input: {input}
+     Response: {output}
 
-Format your dataset
-Each example should include:
+5. **Fine-tune using `SFTTrainer`**  
+A lightweight wrapper from `trl` simplifies the process.  
+Pass in:
+- `model` (with LoRA applied)
+- `train_dataset` (after tokenization)
+- `TrainingArguments`
+- `data_collator` (disable MLM)
 
-instruction
+5. **Save or merge the LoRA adapter**  
+- Use `save_steps` and `save_total_limit` to control checkpointing.
+- Optionally merge the LoRA adapter into the base model after training using PEFT utilities.
 
-input (can be empty)
-
-output
-Format them in Alpaca-style prompts for consistency.
-
-Fine-tune using SFTTrainer
-A lightweight trainer from trl that simplifies supervised fine-tuning. Pass:
-
-model
-
-train_dataset
-
-TrainingArguments
-
-data_collator
-
-Save or merge the LoRA adapter
-
-Save checkpoints using Hugging Face trainer’s built-in options.
-
-Optionally merge LoRA back into the base model for exporting to HF Hub or inference.
-
-
-
-
+---
