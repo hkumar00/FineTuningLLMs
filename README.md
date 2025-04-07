@@ -34,24 +34,51 @@ Our approach allows **modular plug-and-play fine-tuning** across different model
 pip install -r requirements.txt
 ```
 ---
+🔄 Fine-Tuning Workflow Summary
+This section outlines the standard pattern followed in all training scripts within this repo.
 
-🧩 Fine-Tuning Workflow Summary
-      A typical fine-tuning script in this repo follows these steps:
-      
-      Load the base model and tokenizer
-      Use AutoModelForCausalLM and AutoTokenizer from Hugging Face.
-      
-      Configure LoRA with LoraConfig
-      Define the low-rank adaptation parameters like r, alpha, and dropout.
-      
-      Format your dataset
-      Convert each sample into a consistent Instruction, Input, and Response format (e.g., Alpaca-style).
-      
-      Fine-tune using SFTTrainer
-      Pass in your model, dataset, tokenizer (optional), and training arguments.
+🔧 Step-by-step Flow:
+Load the base model and tokenizer
+Use AutoModelForCausalLM and AutoTokenizer from Hugging Face with appropriate memory/dtype settings for your device.
 
-      Save checkpoints or merge LoRA adapter
-      Save fine-tuned weights and optionally merge LoRA into the base model for standalone inference.
+Configure LoRA with LoraConfig
+Use PEFT to define parameters like:
+
+r (rank)
+
+alpha (scaling factor)
+
+dropout
+
+task_type=TaskType.CAUSAL_LM
+
+Format your dataset
+Each example should include:
+
+instruction
+
+input (can be empty)
+
+output
+Format them in Alpaca-style prompts for consistency.
+
+Fine-tune using SFTTrainer
+A lightweight trainer from trl that simplifies supervised fine-tuning. Pass:
+
+model
+
+train_dataset
+
+TrainingArguments
+
+data_collator
+
+Save or merge the LoRA adapter
+
+Save checkpoints using Hugging Face trainer’s built-in options.
+
+Optionally merge LoRA back into the base model for exporting to HF Hub or inference.
+
 
 
 
