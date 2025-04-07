@@ -35,10 +35,23 @@ pip install -r requirements.txt
 
 ---
 
-## 🛠️ Finetuning Flow
-- Load model + tokenizer
-- Configure LoRA using LoraConfig
-- Format your dataset (instruction, input, output)
-- Use SFTTrainer to fine-tune the model
-- Save and optionally merge the LoRA adapter
+🧩 Fine-Tuning Workflow Summary
+A typical fine-tuning script in this repo follows these steps:
+
+Load the base model and tokenizer
+Use AutoModelForCausalLM and AutoTokenizer from Hugging Face.
+
+Configure LoRA with LoraConfig
+Define the low-rank adaptation parameters like r, alpha, and dropout.
+
+Format your dataset
+Convert each sample into a consistent Instruction, Input, and Response format (e.g., Alpaca-style).
+
+Fine-tune using SFTTrainer
+Pass in your model, dataset, tokenizer (optional), and training arguments.
+
+Save checkpoints or merge LoRA adapter
+Save fine-tuned weights and optionally merge LoRA into the base model for standalone inference.
+
+
 
