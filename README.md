@@ -75,3 +75,48 @@ Pass in:
 - Optionally merge the LoRA adapter into the base model after training using PEFT utilities.
 
 ---
+
+
+## 🧪 Fine-Tuning `phi-2` on Alpaca (LoRA, CPU/MPS-Friendly)
+
+📁 **Folder:** `./experiments/phi2-alpaca-lora`
+
+### ⚙️ Parameters
+
+| Component             | Setting                                |
+|-----------------------|----------------------------------------|
+| **Base Model**        | `microsoft/phi-2`                      |
+| **Dataset**           | `tatsu-lab/alpaca` (1% sample)         |
+| **LoRA Rank (r)**     | 8                                      |
+| **LoRA Alpha**        | 16                                     |
+| **Dropout**           | 0.1                                    |
+| **Max Length**        | 512 tokens                             |
+| **Device**            | CPU / MPS (Apple Silicon)              |
+| **Batch Size**        | 1                                      |
+| **Accumulation**      | 4                                      |
+| **Epochs**            | 1                                      |
+| **Learning Rate**     | `2e-4`                                 |
+
+### 🧠 Why These Settings?
+
+- `r=8`, `alpha=16` → Good balance between performance and efficiency for LoRA on small devices  
+- `gradient_accumulation_steps=4` → Effective batch size = 4  
+- `max_length=512` → Shorter sequences enable faster training  
+- `output_dir=./mistral-alpaca-lora` → Easy to organize multiple experiments  
+
+---
+
+### 🧾 `format_text()` Function
+
+We use Alpaca-style formatting for supervised fine-tuning:
+
+```python
+def format_text(text):
+    if text["input"]:
+        full_prompt = f"Instruction: {text['instruction']}\nInput: {text['input']}\n\nResponse:"
+    else:
+        full_prompt = f"Instruction: {text['instruction']}\n\nResponse:"
+    tokenized = tokenizer(full_prompt + " " + text["output"], ...)
+
+```
+
