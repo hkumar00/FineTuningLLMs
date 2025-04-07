@@ -33,3 +33,11 @@ Our approach allows **modular plug-and-play fine-tuning** across different model
 ```bash
 pip install -r requirements.txt
 
+
+Your fine-tuning script should follow this general flow:
+- Load model + tokenizer
+- Configure LoRA using LoraConfig
+- Format your dataset (instruction, input, output)
+- Use SFTTrainer to fine-tune the model
+- Save and optionally merge the LoRA adapter
+
